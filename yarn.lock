@@ -9360,6 +9360,13 @@ react-app-polyfill@^1.0.6:
     regenerator-runtime "^0.13.3"
     whatwg-fetch "^3.0.0"
 
+react-countdown-circle-timer@^2.1.2:
+  version "2.1.2"
+  resolved "https://registry.yarnpkg.com/react-countdown-circle-timer/-/react-countdown-circle-timer-2.1.2.tgz#3097072a953968e19a7223ff4b08a128559e4f84"
+  integrity sha512-oTrt1EuOI0cE/bELvQa8ZkBSdqdp+6Is/CLUr0Qkfk45IGqlIcIHNj6qgNgZkhLiPAmHsEgpwi0uB+yvnDkxNw==
+  dependencies:
+    use-elapsed-time "^1.2.1"
+
 react-dev-utils@^10.2.1:
   version "10.2.1"
   resolved "https://registry.yarnpkg.com/react-dev-utils/-/react-dev-utils-10.2.1.tgz#f6de325ae25fa4d546d09df4bb1befdc6dd19c19"
@@ -11231,6 +11238,11 @@ url@^0.11.0:
   dependencies:
     punycode "1.3.2"
     querystring "0.2.0"
+
+use-elapsed-time@^1.2.1:
+  version "1.2.1"
+  resolved "https://registry.yarnpkg.com/use-elapsed-time/-/use-elapsed-time-1.2.1.tgz#5c313ea78be9750a4d7173c7bfe900ee011af730"
+  integrity sha512-dbZ3XXOPMu8KPgr+4Vwhl4XU0m84s4KSIMq+M3mmKWnZrau28YyEi0QCsf/69QznXo1535FlWL8TILWe08IrhQ==
 
 use@^3.1.0:
   version "3.1.1"

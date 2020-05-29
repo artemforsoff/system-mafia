@@ -12,16 +12,28 @@ export const playersSlice = createSlice({
                 killed: false,
                 kicked: false,
                 isEditingName: true,
+                isEditingRole: true,
                 fines: {
                     first: false,
                     second: false,
                     third: false,
+                },
+                lifeCycle: {
+                    '1d': null,
+                    '1n': null,
+                    '2d': null,
+                    '2n': null,
+                    '3d': null,
+                    '3n': null,
+                    '4d': null,
+                    '4n': null,
                 }
             }
         )),
     },
     reducers: {
         kill: (state, action) => {
+            console.log(action)
             state.players = state.players.map(player => {
                 return player.id === action.payload ? {...player, killed: !player.killed} : player;
             });
@@ -34,6 +46,11 @@ export const playersSlice = createSlice({
         editName: (state, action) => {
             state.players = state.players.map(player => {
                 return player.id === action.payload ? {...player, isEditingName: !player.isEditingName} : player;
+            });
+        },
+        editRole: (state, action) => {
+            state.players = state.players.map(player => {
+                return player.id === action.payload ? {...player, isEditingRole: !player.isEditingRole} : player;
             });
         },
         setName: (state, action) => {
@@ -64,5 +81,5 @@ export const playersSlice = createSlice({
 
 export const selectPlayers = state => state.players.players;
 
-export const { kill, kick, editName, setName, setRole, setFine } = playersSlice.actions;
+export const { kill, kick, editName, setName, setRole, setFine, editRole } = playersSlice.actions;
 export const playersReducer = playersSlice.reducer;

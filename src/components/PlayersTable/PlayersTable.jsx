@@ -1,37 +1,32 @@
-import React, { useEffect } from 'react';
+import React, { useEffect, useState } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
+import { selectPlayers } from '../../model/playersSlice.js';
 import {
-    selectPlayers
+    selectIsPlaying,
+    selectGameCycle,
+    selectCurrentTimeOfDay
+ } from '../../model/gameSlice.js';
+import {
+    kill, kick, setName, editName,
+    editRole, setRole, setFine
 } from '../../model/playersSlice.js';
-import {
-    selectIsPlaying
-} from '../../model/gameSlice.js';
-import {
-    // kill,
-    // kick,
-    setName,
-    editName,
-    setRole,
-    setFine
-} from '../../model/playersSlice.js';
-import { Input, Select, Checkbox, Table } from 'antd';
-
+import { play, setNextTime } from '../../model/gameSlice.js';
+import { Input, Select, Checkbox, Table, Button, Space, Typography } from 'antd';
+import { PlayerIcon } from '../Icons/Icons';
 import './PlayersTable.scss';
 
+
+const { Text } = Typography;
+const { Option } = Select;
+const playersRole = ['Мирный житель', 'Мирная жительница', 'Мафия', 'Дон', 'Шериф'];
+
 export const PlayersTable = () => {
+    // selectors
     const players = useSelector(selectPlayers);
     const isPlaying = useSelector(selectIsPlaying);
-
+    const gameCycle = useSelector(selectGameCycle);
+    // getting dispatch
     const dispatch = useDispatch();
-
-    const { Option } = Select;
-
-    const checkboxLabel = {
-        first: 'Первое',
-        second: 'Второе',
-        third: 'Третье'
-    }
-    const playersRole = ['Мирный житель', 'Мафия', 'Дон', 'Шериф'];
 
     useEffect(() => {
         console.log(players)
@@ -45,42 +40,65 @@ export const PlayersTable = () => {
         {
             title: '№',
             dataIndex: 'id',
-            key: 'id',
         },
         {
             title: 'Игрок',
             dataIndex: 'name',
-            key: 'name',
-            render: (_, { id, name, isEditingName }) => (
+            render: (_, { id, name, isEditingName, killed, kicked }) => (
                 isEditingName ? (
                     <Input
                         onInput={e => dispatch(setName({id, name: e.target.value}))}
                         value={name}
                         placeholder="Напишите имя игрока"
                         onBlur={() => name ? dispatch(editName(id)) : null}
-                        onKeyPress={handleKeyPress}
+                        onKeyPress={(e) => handleKeyPress(e, name, id)}
                     />
-                ) : (<span onDoubleClick={() => dispatch(editName(id))}>{name}</span>)
+                ) : (
+                    <>
+                        <Text 
+                            type={killed || kicked ? 'danger' : null}
+                            delete={killed || kicked}
+                            onDoubleClick={() => dispatch(editName(id))}
+                        >
+                            {name}
+                        </Text>
+                    </>
+                )
             ),
         },
         {
             title: 'Роль',
             dataIndex: 'role',
-            key: 'role',
-            render: (_, { id }) => (
-                <Select
-                    style={{ width: 200 }}
-                    onChange={(role) => dispatch(setRole({id, role}))}
-                    placeholder="Выберете роль игрока"
-                >
-                    {playersRole.map((role, i) => <Option key={i} value={role}>{role}</Option>)}
-                </Select>
+            render: (_, { id, isEditingRole, killed, kicked, role }) => (
+                isEditingRole ? (
+                    <Select 
+                        {...(role ? {defaultValue: role} : null)}
+                        onBlur={() => role ? dispatch(editRole(id)) : null}
+                        style={{ width: 200 }}
+                        onChange={(role) => dispatch(setRole({id, role}))}
+                        placeholder="Выберете роль игрока"
+                    >
+                        {playersRole.map((role, i) => <Option key={i} value={role}>{role}</Option>)}
+                    </Select>
+                ) : (
+                    <div style={{display: 'flex', alignItems: 'center'}}>
+                        <Text 
+                            type={killed || kicked ? 'danger' : null}
+                            delete={killed || kicked}
+                            onDoubleClick={() =>
+                            dispatch(editRole(id))}
+                        >
+                            {role}
+                        </Text>
+                        {role && <PlayerIcon role={role} />}
+                    </div>
+                )
+                
             )
         },
         {
             title: 'Замечания',
             dataIndex: 'fines',
-            key: 'fines',
             render: (_, { fines, id }) => (
                 Object.keys(fines).map(fine => (
                     <Checkbox
@@ -88,13 +106,49 @@ export const PlayersTable = () => {
                         onChange={() => dispatch(setFine({id, fine}))}
                         checked={fines[fine]}
                         disabled={!isPlaying}
-                    >
-                        {checkboxLabel[fine]}
-                    </Checkbox>
+                    />
                 ))
             )
-        }
+        },
+        ...gameCycle.map(({key, title}) => ({
+            title: title,
+            dataIndex: key,
+            render: (_, { lifeCycle }) => <Text>{lifeCycle[key]}</Text>
+        })),
+        {
+            title: 'Действия',
+            dataIndex: 'actions',
+            render: (_, { id, killed, kicked }) => (
+                <Space size="small">
+                    <Button
+                        type="default"
+                        danger={!killed}
+                        onClick={() => dispatch(kill(id))}
+                        disabled={kicked || !isPlaying}
+                    >
+                        {killed ? 'Возрадить' : 'Убить'}
+                    </Button>
+                    <Button
+                        type="default"
+                        danger={!kicked}
+                        onClick={() => dispatch(kick(id))}
+                        disabled={killed || !isPlaying}
+                    >
+                        {kicked ? 'Освободить' : 'Посадить'}
+                    </Button>
+                </Space>
+            )
+        },
     ];
 
-    return <Table dataSource={players} columns={columns} pagination={false} />;
+    return (
+        <>
+            <nav>
+                <Button type="primary" onClick={() => dispatch(play())}>
+                    Начать игру
+                </Button>
+            </nav>
+            <Table dataSource={players} columns={columns} pagination={false} />
+        </>
+    );
 }
