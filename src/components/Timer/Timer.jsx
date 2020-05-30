@@ -18,7 +18,9 @@ export const Timer = () => {
     });
 
     const changeTime = () => {
-        if(start && !pause) setTimeout(() => setSeconds(seconds - 100), 100);
+        if(start && !pause) {
+            setTimeout(() => setSeconds(seconds - 100), 100);
+        }
     }
 
     const resetTimer = () => {

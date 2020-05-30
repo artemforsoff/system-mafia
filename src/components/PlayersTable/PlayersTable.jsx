@@ -8,7 +8,7 @@ import {
  } from '../../model/gameSlice.js';
 import {
     kill, kick, setName, editName,
-    editRole, setRole, setFine
+    editRole, setRole, setFine, expose
 } from '../../model/playersSlice.js';
 import { play, setNextTime } from '../../model/gameSlice.js';
 import { Input, Select, Checkbox, Table, Button, Space, Typography } from 'antd';
@@ -108,6 +108,18 @@ export const PlayersTable = () => {
                         disabled={!isPlaying}
                     />
                 ))
+            )
+        },
+        {
+            title: 'Выставлен на голосование',
+            dataIndex: 'exposed',
+            render: (_, { exposed, id }) => (
+                <Checkbox
+                    key={exposed}
+                    onChange={() => dispatch(expose(id))}
+                    checked={exposed}
+                    disabled={!isPlaying}
+                />
             )
         },
         ...gameCycle.map(({key, title}) => ({

@@ -12,6 +12,7 @@ export const playersSlice = createSlice({
                 kicked: false,
                 isEditingName: true,
                 isEditingRole: true,
+                exposed: false,
                 fines: {
                     first: false,
                     second: false,
@@ -49,6 +50,12 @@ export const playersSlice = createSlice({
                         [action.payload.lifeCycleKey]: player.killed ? null : 'Убили'
                     }
                 } : player;
+            });
+        },
+        expose: (state, action) => {
+            console.log(action)
+            state.players = state.players.map(player => {
+                return player.id === action.payload ? {...player, exposed: !player.exposed} : player;
             });
         },
         kick: (state, action) => {
@@ -108,5 +115,5 @@ export const playersSlice = createSlice({
 
 export const selectPlayers = state => state.players.players;
 
-export const { kill, kick, editName, setName, setRole, setFine, editRole } = playersSlice.actions;
+export const { kill, kick, editName, setName, setRole, setFine, editRole, expose } = playersSlice.actions;
 export const playersReducer = playersSlice.reducer;
