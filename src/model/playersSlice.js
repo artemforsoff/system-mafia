@@ -1,5 +1,4 @@
 import { createSlice } from '@reduxjs/toolkit';
-
 export const playersSlice = createSlice({
     name: 'players',
     initialState: {
@@ -39,7 +38,14 @@ export const playersSlice = createSlice({
                     ...player, 
                     killed: !player.killed,
                     lifeCycle: {
-                        ...player.lifeCycle,
+                        '1d': null,
+                        '1n': null,
+                        '2d': null,
+                        '2n': null,
+                        '3d': null,
+                        '3n': null,
+                        '4d': null,
+                        '4n': null,
                         [action.payload.lifeCycleKey]: player.killed ? null : 'Убили'
                     }
                 } : player;
@@ -51,7 +57,14 @@ export const playersSlice = createSlice({
                     ...player, 
                     kicked: !player.kicked,
                     lifeCycle: {
-                        ...player.lifeCycle,
+                        '1d': null,
+                        '1n': null,
+                        '2d': null,
+                        '2n': null,
+                        '3d': null,
+                        '3n': null,
+                        '4d': null,
+                        '4n': null,
                         [action.payload.lifeCycleKey]: player.kicked ? null : 'За решёткой'
                     }
                 } : player;

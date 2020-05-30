@@ -21,8 +21,12 @@ export const gameSlice = createSlice({
             state.isPlaying = true;
             state.currentTimeOfDay = 0;
         },
-        setNextTime: (state) => {
-            state.currentTimeOfDay += 1;
+        setNextTime: (state, action) => {
+            if(action.payload === 'return') {
+                state.currentTimeOfDay -= 1;
+            } else {
+                state.currentTimeOfDay += 1;
+            }
         }
     },
 });

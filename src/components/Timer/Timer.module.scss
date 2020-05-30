@@ -1,0 +1,12 @@
+.timer {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+
+    &__current {
+        font-size: 60px;
+    }
+    &__currentDanger {
+        color: #ff1f1f;
+    }
+}

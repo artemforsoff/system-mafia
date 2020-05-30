@@ -47,7 +47,7 @@ export const PlayersTable = () => {
             render: (_, { id, name, isEditingName, killed, kicked }) => (
                 isEditingName ? (
                     <Input
-                        onInput={e => dispatch(setName({id, name: e.target.value}))}
+                        onChange={e => dispatch(setName({id, name: e.target.value}))}
                         value={name}
                         placeholder="Напишите имя игрока"
                         onBlur={() => name ? dispatch(editName(id)) : null}
@@ -143,6 +143,7 @@ export const PlayersTable = () => {
 
     return (
         <>
+            <Text style={{paddingBottom: '10px', display: 'block'}}>Количество игроков: {players.filter(({killed, kicked}) => !killed && !kicked).length}</Text>
             <nav>
                 <Button disabled={isPlaying} type="primary" onClick={() => dispatch(play())}>
                     Начать игру
@@ -151,6 +152,13 @@ export const PlayersTable = () => {
                    { currentTimeOfDay !== null ? 'Сейчас ' + gameCycle[currentTimeOfDay].fullTitle.toLowerCase() : 'Игра не началась'}
                 </Text>
                 <Space size="small">
+                    <Button
+                        type="primary"
+                        disabled={!isPlaying || currentTimeOfDay === 0}
+                        onClick={() => {dispatch(setNextTime('return'))}}
+                    >
+                        Вернуться
+                    </Button>
                     <Button
                         type="primary"
                         disabled={!isPlaying || currentTimeOfDay === 7 || gameCycle[currentTimeOfDay].key[1] === 'd'}
