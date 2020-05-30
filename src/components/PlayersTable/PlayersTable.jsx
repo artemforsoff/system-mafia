@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
 import { selectPlayers } from '../../model/playersSlice.js';
 import {
@@ -15,7 +15,6 @@ import { Input, Select, Checkbox, Table, Button, Space, Typography } from 'antd'
 import { PlayerIcon } from '../Icons/Icons';
 import './PlayersTable.scss';
 
-
 const { Text } = Typography;
 const { Option } = Select;
 const playersRole = ['Мирный житель', 'Мирная жительница', 'Мафия', 'Дон', 'Шериф'];
@@ -25,6 +24,7 @@ export const PlayersTable = () => {
     const players = useSelector(selectPlayers);
     const isPlaying = useSelector(selectIsPlaying);
     const gameCycle = useSelector(selectGameCycle);
+    const currentTimeOfDay = useSelector(selectCurrentTimeOfDay);
     // getting dispatch
     const dispatch = useDispatch();
 
@@ -81,7 +81,8 @@ export const PlayersTable = () => {
                         {playersRole.map((role, i) => <Option key={i} value={role}>{role}</Option>)}
                     </Select>
                 ) : (
-                    <div style={{display: 'flex', alignItems: 'center'}}>
+                    <Space style={{display: 'flex', alignItems: 'center'}}>
+                        {role && <PlayerIcon role={role} />}
                         <Text 
                             type={killed || kicked ? 'danger' : null}
                             delete={killed || kicked}
@@ -90,8 +91,7 @@ export const PlayersTable = () => {
                         >
                             {role}
                         </Text>
-                        {role && <PlayerIcon role={role} />}
-                    </div>
+                    </Space>
                 )
                 
             )
@@ -123,7 +123,7 @@ export const PlayersTable = () => {
                     <Button
                         type="default"
                         danger={!killed}
-                        onClick={() => dispatch(kill(id))}
+                        onClick={() => dispatch(kill({id, lifeCycleKey: gameCycle[currentTimeOfDay].key}))}
                         disabled={kicked || !isPlaying}
                     >
                         {killed ? 'Возрадить' : 'Убить'}
@@ -131,7 +131,7 @@ export const PlayersTable = () => {
                     <Button
                         type="default"
                         danger={!kicked}
-                        onClick={() => dispatch(kick(id))}
+                        onClick={() => dispatch(kick({id, lifeCycleKey: gameCycle[currentTimeOfDay].key}))}
                         disabled={killed || !isPlaying}
                     >
                         {kicked ? 'Освободить' : 'Посадить'}
@@ -144,9 +144,28 @@ export const PlayersTable = () => {
     return (
         <>
             <nav>
-                <Button type="primary" onClick={() => dispatch(play())}>
+                <Button disabled={isPlaying} type="primary" onClick={() => dispatch(play())}>
                     Начать игру
                 </Button>
+                <Text style={{ fontSize: '32px' }}>
+                   { currentTimeOfDay !== null ? 'Сейчас ' + gameCycle[currentTimeOfDay].fullTitle.toLowerCase() : 'Игра не началась'}
+                </Text>
+                <Space size="small">
+                    <Button
+                        type="primary"
+                        disabled={!isPlaying || currentTimeOfDay === 7 || gameCycle[currentTimeOfDay].key[1] === 'd'}
+                        onClick={() => {dispatch(setNextTime())}}
+                    >
+                        День
+                    </Button>
+                    <Button
+                        type="primary"
+                        disabled={!isPlaying || currentTimeOfDay === 7 || gameCycle[currentTimeOfDay].key[1] === 'n'}
+                        onClick={() => {dispatch(setNextTime())}}
+                    >
+                        Ночь
+                    </Button>
+                </Space> 
             </nav>
             <Table dataSource={players} columns={columns} pagination={false} />
         </>

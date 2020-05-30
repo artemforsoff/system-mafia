@@ -35,12 +35,26 @@ export const playersSlice = createSlice({
         kill: (state, action) => {
             console.log(action)
             state.players = state.players.map(player => {
-                return player.id === action.payload ? {...player, killed: !player.killed} : player;
+                return player.id === action.payload.id ? {
+                    ...player, 
+                    killed: !player.killed,
+                    lifeCycle: {
+                        ...player.lifeCycle,
+                        [action.payload.lifeCycleKey]: player.killed ? null : 'Убили'
+                    }
+                } : player;
             });
         },
         kick: (state, action) => {
             state.players = state.players.map(player => {
-                return player.id === action.payload ? {...player, kicked: !player.kicked} : player;
+                return player.id === action.payload.id ? {
+                    ...player, 
+                    kicked: !player.kicked,
+                    lifeCycle: {
+                        ...player.lifeCycle,
+                        [action.payload.lifeCycleKey]: player.kicked ? null : 'За решёткой'
+                    }
+                } : player;
             });
         },
         editName: (state, action) => {

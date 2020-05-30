@@ -5,23 +5,24 @@ export const gameSlice = createSlice({
     initialState: {
         isPlaying: false,
         gameCycle: [
-            {key: '1d', title: '1Д'}, 
-            {key: '1n', title: '2Н'}, 
-            {key: '2d', title: '2Д'}, 
-            {key: '2n', title: '2Н'}, 
-            {key: '3d', title: '3Д'}, 
-            {key: '3n', title: '3Н'}, 
-            {key: '4d', title: '4Д'}, 
-            {key: '4n', title: '4Н'}
+            {key: '1d', title: '1Д', fullTitle: 'Первый день'}, 
+            {key: '1n', title: '2Н', fullTitle: 'Первая ночь'}, 
+            {key: '2d', title: '2Д', fullTitle: 'Второй день'}, 
+            {key: '2n', title: '2Н', fullTitle: 'Вторая ночь'}, 
+            {key: '3d', title: '3Д', fullTitle: 'Третий день'}, 
+            {key: '3n', title: '3Н', fullTitle: 'Третья ночь'}, 
+            {key: '4d', title: '4Д', fullTitle: 'Четвёртый день'}, 
+            {key: '4n', title: '4Н', fullTitle: 'Четвёртая ночь'}
         ],
-        currentTimeOfDay: 0
+        currentTimeOfDay: null
     },
     reducers: {
         play: (state) => {
-            state.isPlaying = true
+            state.isPlaying = true;
+            state.currentTimeOfDay = 0;
         },
         setNextTime: (state) => {
-            state.currentTimeOfDay += 1 
+            state.currentTimeOfDay += 1;
         }
     },
 });
